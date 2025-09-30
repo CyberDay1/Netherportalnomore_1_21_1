@@ -1,5 +1,6 @@
 package com.cyberday1.netherportalnomore;
 
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Items;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -19,6 +20,7 @@ public final class PortalBlocker {
     @SubscribeEvent
     public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
         if (event.getItemStack().is(Items.FLINT_AND_STEEL)) {
+            event.setCancellationResult(InteractionResult.FAIL);
             event.setCanceled(true);
         }
     }
