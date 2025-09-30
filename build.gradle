@@ -14,12 +14,9 @@ java {
     withSourcesJar()
 }
 
-minecraft.accessTransformers.file file('src/main/resources/META-INF/accesstransformer.cfg') // ok if file missing
-
 repositories {
     mavenLocal()
     maven { url = 'https://maven.neoforged.net/releases' }
-    maven { url = 'https://libraries.minecraft.net' }
     mavenCentral()
 }
 
@@ -32,22 +29,27 @@ tasks.withType(JavaCompile).configureEach {
     options.release = 21
 }
 
-userdev {
-    mappings = "${property('mappings_channel')}_${property('mappings_version')}"
-    runs {
-        client {
-            client()
-            workingDirectory project.layout.projectDirectory.dir("run").asFile
-            systemProperty 'neoforge.enabledGameTestNamespaces', property('mod_id')
-            modSource project.sourceSets.main
-        }
-        server {
-            server()
-            workingDirectory project.layout.projectDirectory.dir("run-server").asFile
-            systemProperty 'neoforge.enabledGameTestNamespaces', property('mod_id')
-            modSource project.sourceSets.main
-        }
+// Configure NeoGradle extensions
+minecraft {
+    modIdentifier property('mod_id')
+    mappings {
+        channel(minecraft.namingChannels.named(property('mappings_channel')).get())
+        version property('mappings_version')
     }
+}
+
+runs.named('client') {
+    runType 'client'
+    workingDirectory project.layout.projectDirectory.dir('run')
+    systemProperty 'neoforge.enabledGameTestNamespaces', property('mod_id')
+    modSource sourceSets.main
+}
+
+runs.named('server') {
+    runType 'server'
+    workingDirectory project.layout.projectDirectory.dir('run-server')
+    systemProperty 'neoforge.enabledGameTestNamespaces', property('mod_id')
+    modSource sourceSets.main
 }
 
 tasks.jar {
