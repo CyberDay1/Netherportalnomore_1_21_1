@@ -6,5 +6,7 @@ import net.neoforged.fml.common.Mod;
 public final class NetherPortalNoMore {
     public static final String MODID = "netherportalnomore";
 
-    public NetherPortalNoMore() {}
+    public NetherPortalNoMore() {
+        // No-op. Event handlers are registered via annotations.
+    }
 }
