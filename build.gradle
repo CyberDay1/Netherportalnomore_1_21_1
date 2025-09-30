@@ -29,21 +29,19 @@ tasks.withType(JavaCompile).configureEach {
     options.release = 21
 }
 
-userdev {
-    mappings = "${property('mappings_channel')}_${property('mappings_version')}"
-    runs {
-        client {
-            client()
-            workingDirectory project.layout.projectDirectory.dir("run").asFile
-            systemProperty 'neoforge.enabledGameTestNamespaces', property('mod_id')
-            modSource project.sourceSets.main
-        }
-        server {
-            server()
-            workingDirectory project.layout.projectDirectory.dir("run-server").asFile
-            systemProperty 'neoforge.enabledGameTestNamespaces', property('mod_id')
-            modSource project.sourceSets.main
-        }
+userDevRuntime {
+    runs.configureEach {
+        modSource project.sourceSets.main
+    }
+
+    runs.named("client").configure {
+        workingDirectory.set(project.layout.projectDirectory.dir("run"))
+        systemProperties.put('neoforge.enabledGameTestNamespaces', project.property('mod_id'))
+    }
+
+    runs.named("server").configure {
+        workingDirectory.set(project.layout.projectDirectory.dir("run-server"))
+        systemProperties.put('neoforge.enabledGameTestNamespaces', project.property('mod_id'))
     }
 }
 
